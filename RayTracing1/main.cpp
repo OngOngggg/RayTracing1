@@ -6,20 +6,30 @@ using std::cin;
 using std::cout;
 
 //判断光线是否与某个球相交
-bool hit_sphere(const point3& center, double radius, const ray& r) {
+double hit_sphere(const point3& center, double radius, const ray& r) {
 	vec3 oc = r.getOrigin() - center;
+	//套公式
 	double a = dot(r.getDirection(), r.getDirection());
 	double b = 2.0 * dot(r.getDirection(), oc);
 	double c = dot(oc, oc) - radius * radius;
 	double discriminant = b * b - 4 * a * c;
-	return discriminant > 0;
+
+	if (discriminant < 0) return -1.0;
+	double t1 = (-b - sqrt(discriminant)) / (2.0 * a);
+	if (t1) return t1;
+	double t2 = (-b + sqrt(discriminant)) / (2.0 * a);
+	if (t2) return t2;
+	return -1.0;
 }
 
 color ray_color(const ray& r) {
-	if (hit_sphere(point3(0, 0, -1), 0.5, r))
-		return color(1, 0, 0);
+	double t = hit_sphere(point3(0, 0, -1), 0.5, r);
+	if (t) {
+		vec3 N = unit_vector(r.at(t) - point3(0, 0, -1));
+		return 0.5 * color(N.x() + 1, N.y() + 1, N.z() + 1);
+	}
 	vec3 unit_direction = unit_vector(r.getDirection());
-	auto t = 0.5 * (unit_direction.y() + 1.0);
+	t = 0.5 * (unit_direction.y() + 1.0);
 	//线性插值
 	return (1.0 - t) * color(1.0, 1.0, 1.0) + t * color(0.5, 0.7, 1.0);
 }
@@ -46,9 +56,10 @@ int main()
 	const double aspect_ratio = 16.0 / 9.0;
 	const int image_width = 400;
 	const int image_height = static_cast<int>(image_width / aspect_ratio);
-	
+	//视平面（cmos?)
 	double viewport_height = 2.0;
 	double viewport_width = aspect_ratio * viewport_height;
+	//焦距
 	double focal_length = 1.0;
 
 	point3 origin = point3(0, 0, 0);
