@@ -1,35 +1,40 @@
+#pragma once
 #include<iostream>
 #include"vec3.h"
 
-#include"ray.h"
+#include"sphere.h"
+#include"hittable_list.h"
+#include"rtweekend.h"
+
 using std::cin;
 using std::cout;
 
 //判断光线是否与某个球相交
-double hit_sphere(const point3& center, double radius, const ray& r) {
-	vec3 oc = r.getOrigin() - center;
-	//套公式
-	double a = dot(r.getDirection(), r.getDirection());
-	double b = 2.0 * dot(r.getDirection(), oc);
-	double c = dot(oc, oc) - radius * radius;
-	double discriminant = b * b - 4 * a * c;
+//double hit_sphere(const point3& center, double radius, const ray& r) {
+//	vec3 oc = r.getOrigin() - center;
+//	//套公式
+//	double a = dot(r.getDirection(), r.getDirection());
+//	//double b = 2.0 * dot(r.getDirection(), oc);
+//	double double_b = 2.0 * dot(r.getDirection(), oc);
+//	double c = dot(oc, oc) - radius * radius;
+//	/*double discriminant = b * b - 4 * a * c;*/
+//	double discriminant = double_b * double_b - a * c;
+//
+//	if (discriminant < 0) return -1.0;
+//	//double t1 = (-b - sqrt(discriminant)) / (2.0 * a);
+//	double t1 = (-double_b - sqrt(discriminant)) / a;
+//	if (t1) return t1;
+//	double t2 = (-double_b + sqrt(discriminant)) / a;
+//	if (t2) return t2;
+//	return -1.0;
+//}
 
-	if (discriminant < 0) return -1.0;
-	double t1 = (-b - sqrt(discriminant)) / (2.0 * a);
-	if (t1) return t1;
-	double t2 = (-b + sqrt(discriminant)) / (2.0 * a);
-	if (t2) return t2;
-	return -1.0;
-}
-
-color ray_color(const ray& r) {
-	double t = hit_sphere(point3(0, 0, -1), 0.5, r);
-	if (t) {
-		vec3 N = unit_vector(r.at(t) - point3(0, 0, -1));
-		return 0.5 * color(N.x() + 1, N.y() + 1, N.z() + 1);
-	}
+color ray_color(const ray& r,const hittable& world) {
+	hit_record rec;
+	if (world.hit(r, 0, infinity, rec)) { return 0.5 * (rec.normal + color(1,1,1)); }
+	
 	vec3 unit_direction = unit_vector(r.getDirection());
-	t = 0.5 * (unit_direction.y() + 1.0);
+	double t = 0.5 * (unit_direction.y() + 1.0);
 	//线性插值
 	return (1.0 - t) * color(1.0, 1.0, 1.0) + t * color(0.5, 0.7, 1.0);
 }
@@ -62,6 +67,10 @@ int main()
 	//焦距
 	double focal_length = 1.0;
 
+	hittable_list world;
+	world.add(make_shared<sphere>(point3(0, 0, -1), 0.5));
+	world.add(make_shared<sphere>(point3(0, -100.5, -1), 100));
+
 	point3 origin = point3(0, 0, 0);
 	vec3 horizontal = vec3(viewport_width, 0, 0);
 	vec3 vertical = vec3(0, viewport_height, 0);
@@ -75,7 +84,7 @@ int main()
 			double u = double(i) / (image_width - 1);
 			double v = double(j) / (image_height - 1);
 			ray r(origin, lower_left_corner + u * horizontal + v * vertical - origin);
-			color pixel_color = ray_color(r);
+			color pixel_color = ray_color(r,world);
 			pixel_color.write_color(cout);
 		}
 	}

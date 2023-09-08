@@ -1,4 +1,5 @@
 #include"ray.h"
+#pragma once
 
 struct hit_record
 {
