@@ -51,6 +51,24 @@ public:
 			<< static_cast<int>(255.999 * e[1]) << ' '
 			<< static_cast<int>(255.999 * e[2]) << '\n';
 	}
+	double clamp(double x, double min, double max) {
+		if (x < min) return min;
+		if (x > max) return max;
+		return x;
+	}
+	void write_color(std::ostream& out, int samples_per_pixel) {
+		double scale = 1.0 / samples_per_pixel;
+		double r = e[0];
+		double g = e[1];
+		double b = e[2];
+		r *= scale;
+		g *= scale;
+		b *= scale;
+		out << static_cast<int>(256 * clamp(r, 0.0, 0.999)) << ' '
+			<< static_cast<int>(256 * clamp(g, 0.0, 0.999)) << ' '
+			<< static_cast<int>(256 * clamp(b, 0.0, 0.999)) << '\n';
+
+	}
 
 public:
 	double e[3];
