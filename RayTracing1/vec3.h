@@ -4,6 +4,9 @@
 #include<iostream>
 using std::sqrt;
 
+inline double random_double();
+inline double random_double(double min, double max);
+
 class vec3 {
 public:
 
@@ -61,18 +64,38 @@ public:
 		double r = e[0];
 		double g = e[1];
 		double b = e[2];
-		r *= scale;
-		g *= scale;
-		b *= scale;
+		r = sqrt(r * scale);
+		g = sqrt(g*scale);
+		b = sqrt(b*scale);
 		out << static_cast<int>(256 * clamp(r, 0.0, 0.999)) << ' '
 			<< static_cast<int>(256 * clamp(g, 0.0, 0.999)) << ' '
 			<< static_cast<int>(256 * clamp(b, 0.0, 0.999)) << '\n';
 
 	}
 
+	static vec3 random()
+	{
+		return vec3(random_double(), random_double(), random_double());
+	}
+
+	static vec3 random(double min, double max)
+	{
+		return vec3(random_double(min, max), random_double(min, max), random_double(min, max));
+	}
+
 public:
 	double e[3];
 };
+
+vec3 random_in_unit_sphere()
+{
+	while (1)
+	{
+		vec3 p = vec3::random(-1, 1);
+		if (p.length_squared() >= 1) continue;
+		return p;
+	}
+}
 
 using point3 = vec3;
 using color = vec3;
