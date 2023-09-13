@@ -6,6 +6,7 @@ using std::sqrt;
 
 inline double random_double();
 inline double random_double(double min, double max);
+inline double dot(const vec3& u, const vec3& v);
 
 class vec3 {
 public:
@@ -95,6 +96,17 @@ vec3 random_in_unit_sphere()
 		if (p.length_squared() >= 1) continue;
 		return p;
 	}
+}
+
+vec3 random_unit_vector() {
+	double a = random_double(0, 2 * 3.1415926535897932385);
+	double z = random_double(-1, 1);
+	double r = sqrt(1 - z * z);
+	return vec3(r * cos(a), r * sin(a), z);
+}
+
+vec3 reflect(const vec3& v, const vec3& n) {
+	return v - 2 * dot(v, n) * n;
 }
 
 using point3 = vec3;

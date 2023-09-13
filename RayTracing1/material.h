@@ -11,7 +11,7 @@ public:
 		 color& attenuation, ray& scattered) const = 0;
 };
 
-
+//朗博反射
 class lambertian :public material {
 public:
 	lambertian(const color& a) :albedo(a) { }
@@ -23,5 +23,21 @@ public:
 		return true;
 	}
 public:
+	color albedo;//反射率
+};
+
+//金属材料
+class metal :public material {
+public:
+	metal(const color& a) :albedo(a) { }
+
+	virtual bool scatter(const ray& r_in, const hit_record& rec, color& attenuation, ray& scattered) const override {
+		vec3 reflected = reflect(unit_vector(r_in.getDirection()), rec.normal);
+		scattered = ray(rec.p, reflected);
+		attenuation = albedo;
+		return (dot(scattered.getDirection(), rec.normal) > 0);
+	}
+public:
 	color albedo;
 };
+

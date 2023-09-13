@@ -3,9 +3,10 @@
 
 class material;
 
-class hit_record
-{
-public:
+using std::shared_ptr;
+using std::make_shared;
+
+struct hit_record {
 	point3 p; //（交）点
 	vec3 normal;//这个是（法）向量
 	double t;
