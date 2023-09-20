@@ -6,6 +6,7 @@
 #include"hittable_list.h"
 #include"rtweekend.h"
 #include"camera.h"
+#include"material.h"
 
 using std::cin;
 using std::cout;
@@ -46,7 +47,7 @@ color ray_color(const ray& r,const hittable& world,int depth) {
 		ray scattered;
 		color attenuation;
 		if (rec.mat_ptr->scatter(r, rec, attenuation, scattered))
-			return attenuation * ray_color(scattered, world, depth - 1);
+			return attenuation * ray_color(scattered, world, depth + 1);
 		return color(0, 0, 0);
 	}
 	vec3 unit_direction = unit_vector(r.getDirection());
@@ -77,9 +78,20 @@ int main()
 	const double aspect_ratio = 16.0 / 9.0;
 	const int image_width = 400;
 	const int image_height = static_cast<int>(image_width / aspect_ratio);
+	//抗锯齿模拟随机次数
 	const int sample_per_pixel = 100;
 
 	hittable_list world;
+	//都是书中的例子
+	auto material_ground = make_shared<lambertian>(color(0.8, 0.8, 0.0));
+	auto material_center = make_shared<lambertian>(color(0.7, 0.3, 0.3));
+	auto material_left = make_shared<metal>(color(0.8, 0.8, 0.8));
+	auto material_right = make_shared<metal>(color(0.8, 0.6, 0.2));
+
+	world.add(make_shared<sphere>(point3(0.0, -100.5, -1.0), 100.0, material_ground));
+	world.add(make_shared<sphere>(point3(0.0, 0.0, -1.0), 0.5, material_center));
+	world.add(make_shared<sphere>(point3(-1.0, 0.0, -1.0), 0.5, material_left));
+	world.add(make_shared<sphere>(point3(1.0, 0.0, -1.0), 0.5, material_right));
 	//world.add(make_shared<sphere>(point3(0, 0, -1), 0.5));
 	//world.add(make_shared<sphere>(point3(0, -100.5, -1), 100));
 
@@ -91,6 +103,7 @@ int main()
 			color pixel_color(0, 0, 0);
 			for (int s = 0; s < sample_per_pixel; ++s)
 			{
+				//加随机值完成对抗锯齿的模拟，
 				double u = (i + random_double()) / (image_width + 1);
 				double v = (j + random_double()) / (image_height + 1);
 				ray r = cam.get_ray(u, v);

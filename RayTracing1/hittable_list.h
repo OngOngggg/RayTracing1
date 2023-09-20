@@ -18,6 +18,7 @@ public:
 
 public:
 	vector<shared_ptr<hittable>> objects;
+
 	bool hit(const ray& r, double t_min, double t_max, hit_record& rec) const
 	{
 		hit_record tem_rec;

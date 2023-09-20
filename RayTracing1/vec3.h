@@ -6,7 +6,6 @@ using std::sqrt;
 
 inline double random_double();
 inline double random_double(double min, double max);
-inline double dot(const vec3& u, const vec3& v);
 
 class vec3 {
 public:
@@ -105,10 +104,6 @@ vec3 random_unit_vector() {
 	return vec3(r * cos(a), r * sin(a), z);
 }
 
-vec3 reflect(const vec3& v, const vec3& n) {
-	return v - 2 * dot(v, n) * n;
-}
-
 using point3 = vec3;
 using color = vec3;
 
@@ -147,4 +142,8 @@ inline vec3 cross(const vec3& u, const vec3& v) {
 
 inline vec3 unit_vector(const vec3& v) {
 	return v / v.length();
+}
+
+vec3 reflect(const vec3& v, const vec3& n) {
+	return v - 2 * dot(v, n) * n;
 }

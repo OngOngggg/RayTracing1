@@ -26,8 +26,8 @@ public:
 			{
 				rec.t = t;
 				rec.p = r.at(t);
-				rec.normal = (rec.p - center) / radius;
-				rec.set_face_normal(r, rec.normal);
+				vec3 outward_normal = (rec.p - center) / radius;
+				rec.set_face_normal(r, outward_normal);
 				rec.mat_ptr = mat_ptr;
 				return true;
 			}
@@ -37,14 +37,13 @@ public:
 			{
 				rec.t = t;
 				rec.p = r.at(t);
-				rec.normal = (rec.p - center) / radius;
-				rec.set_face_normal(r, rec.normal);
+				vec3 outward_normal = (rec.p - center) / radius;
+				rec.set_face_normal(r, outward_normal);
 				rec.mat_ptr = mat_ptr;
 				return true;
 			}
-
-			return false;
 		}
+		return false;
 	}
 
 public:
