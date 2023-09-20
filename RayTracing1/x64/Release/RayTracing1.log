@@ -1,7 +1,7 @@
 ﻿  main.cpp
   正在生成代码
-  2 of 232 functions ( 0.9%) were compiled, the rest were copied from previous compilation.
+  1 of 267 functions ( 0.4%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
-    12 functions had inline decision re-evaluated but remain unchanged
+    0 functions had inline decision re-evaluated but remain unchanged
   已完成代码的生成
   RayTracing1.vcxproj -> C:\Users\yxz\source\repos\杂\Ray\RayTracing1\x64\Release\RayTracing1.exe
